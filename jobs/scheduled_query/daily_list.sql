@@ -4,7 +4,7 @@ in ppltx-app game
 
 */
 --ppltx-m--tutorial-dev.fp_scheduled_query.daily_segment
---truncate table `fp_scheduled_query.daily_segment`
+--truncate table `ppltx-m--tutorial-dev.fp_scheduled_query.daily_segment`
 --create or replace table `fp_scheduled_query.daily_segment`
 --as
 insert into `ppltx-m--tutorial-dev.fp_scheduled_query.daily_segment`
