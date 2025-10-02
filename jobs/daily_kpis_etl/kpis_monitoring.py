@@ -38,13 +38,12 @@ def process_command_line(argv):
 
     parser = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("project_id", choices=["ppltx-m--tutorial-dev", "my-bi-project-ppltx","ppltx-m-tutorial-prod"],
-                        help="""Operation to perform. The arguments for each option are:Full_Load:   --date""",
+                        help="Operation to perform. The arguments for each option are:Full_Load:   --date",
                         default="ppltx-m--tutorial-dev")
-    parser.add_argument("--etl-action", choices=["init", "daily", "delete"], help="""The action the etl job""")
-    parser.add_argument("--etl-name", help="""The name of the etl job""")
-    parser.add_argument("--dry-run", help="""if True don't execute the queries""", action="store_true")
-    parser.add_argument("--days-back", help="""The number of days we want to go back""",
-                        default=0)
+    parser.add_argument("--etl-action", choices=["init", "daily", "delete"], help="The action the etl job")
+    parser.add_argument("--etl-name", help="The name of the etl job")
+    parser.add_argument("--dry-run", help="if True don't execute the queries", action="store_true")
+    parser.add_argument("--days-back", help="The number of days we want to go back",default=0)
 
     return parser, argparse.Namespace()
 
@@ -76,18 +75,19 @@ env_type = 'daily'
 log_table = f"{project_id}.logs.daily_logs"
 
 # init log dict
-log_dict = {'ts': datetime.now(),
-            'dt': datetime.now().strftime("%Y-%m-%d"),
-            'uid': str(uuid.uuid4())[:8],
-            'username': platform.node(),
-            'job_name': etl_name,
-            'job_type': etl_action,
-            'file_name': os.path.basename(__file__),
-            'step_name': 'start',
-            'step_id': step_id,
-            'log_type': env_type,
-            'message': str(x)
-            }
+log_dict = {
+    'ts': datetime.now(),
+    'dt': datetime.now().strftime("%Y-%m-%d"),
+    'uid': str(uuid.uuid4())[:8],
+    'username': platform.node(),
+    'job_name': etl_name,
+    'job_type': etl_action,
+    'file_name': os.path.basename(__file__),
+    'step_name': 'start',
+    'step_id': step_id,
+    'log_type': env_type,
+    'message': str(x)
+}
 
 
 # functions
@@ -97,7 +97,7 @@ def set_log(log_dict, step, log_table=log_table):
     log_dict['ts'] = datetime.now()
     log_dict['dt'] = datetime.now().strftime("%Y-%m-%d")
     job = client.load_table_from_dataframe(pd.DataFrame(log_dict, index=[0]), log_table)
-    job.result()  # Wait for the job to complete.
+    job.result()
 
 
 if not flags.dry_run:
@@ -109,19 +109,24 @@ kpis_configuration = readJsonFile(folder_name/ f"config/{etl_name}_config.json")
 # dictionary for queries
 query_dict = {}
 alert_columns ='raise_flag'
+
+df_all = pd.DataFrame()   #  Initialize empty DataFrame
+
 # Iterate all the validation groups in the conf
 for kpis_group_name, group_conf in kpis_configuration.items():
     header(kpis_group_name)
 
-    for kpis_name, kpis_conf in  group_conf["kpis"].items():
+    for kpis_name, kpis_conf in group_conf["kpis"].items():
         print(kpis_name)
         query_sql = readFile(folder_name / f"queries/{kpis_name}_alerts.sql")
 
-        query_params_base = {"date": y_m_d,
-                             "run_time": run_time,
-                             "project": project_id,
-                             "job_type": etl_action,
-                             "kpis_name": kpis_name,}
+        query_params_base = {
+            "date": y_m_d,
+             "run_time": run_time,
+             "project": project_id,
+             "job_type": etl_action,
+             "kpis_name": kpis_name,
+        }
 
         if not kpis_conf["isEnable"]:
             continue
@@ -134,18 +139,19 @@ for kpis_group_name, group_conf in kpis_configuration.items():
 
         # write a query to log
 
-        writeFile(logs_path/ f"kpi_{kpis_name}.sql", query)
+        writeFile(logs_path / f"kpi_{kpis_name}.sql", query)
 
         if not flags.dry_run:
             try:
                 job_id = client.query(query)
                 query_df = job_id.to_dataframe()
                 query_dict[kpis_name] = {}
+
                 # get job details
                 job = client.get_job(job_id)
 
                 # union the query results
-                if len(query_dict.keys()) == 1:
+                if df_all.empty:
                     df_all = query_df
                 else:
                     df_all = pd.concat([df_all, query_df], ignore_index=True)
@@ -155,18 +161,16 @@ for kpis_group_name, group_conf in kpis_configuration.items():
                        f"\nOpen file {str(logs_path)}/{kpis_name}_error.md""")
                 print(msg_error)
                 writeFile(logs_path / f"{kpis_name}_error.md", msg_error)
-                # To send alert in Slack
 
+#  Final check – only if df_all has data
+if not df_all.empty and (df_all[alert_columns]).any():
 
-# if the df has values, send a message
-if (df_all[alert_columns]).any():
-    # extract only the rows with raising_flag = True
     print(df_all[df_all[alert_columns]])
     error_msg = "[ KPIs Alert]"
     df_alert = df_all[df_all[alert_columns]]
     df_alert = df_alert.loc[:, df_alert.columns != 'message']
-    msg = (f"{error_msg}\n\n*There is a significant change in the KPIs*\n" + format_dataframe_for_slack(df_alert)) # query_df.to_string(index=1))
-    # slack_obj.update_with_slack_message(msg)
+    msg = f"{error_msg}\n\n*There is a significant change in the KPIs*\n"
+
     writeFile(logs_path / f"{etl_name}_monitoring_msg.md", msg)
     print(msg)
 

@@ -48,13 +48,12 @@ def process_command_line(argv):
     # initialize the parser object:
     parser = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("project_id", choices=["ppltx-m--tutorial-dev", "my-bi-project-ppltx","ppltx-m-tutorial-prod"],
-                        help="""Operation to perform. The arguments for each option are:
-                        Full_Load:   --date""",
+                        help="Operation to perform. The arguments for each option are:Full_Load:   --date",
                         default="ppltx-m--tutorial-dev")
-    parser.add_argument("--etl-action", choices=["init", "daily", "delete"], help="""The action the etl job""")
-    parser.add_argument("--etl-name", help="""The name of the etl job""")
-    parser.add_argument("--dry-run", help="""if True don't execute the queries""", action="store_true")
-    parser.add_argument("--days-back", help="""The number of days we want to go back""",default=1)
+    parser.add_argument("--etl-action", choices=["init", "daily", "delete"], help="The action the etl job")
+    parser.add_argument("--etl-name", help="The name of the etl job")
+    parser.add_argument("--dry-run", help="if True don't execute the queries", action="store_true")
+    parser.add_argument("--days-back", help="The number of days we want to go back",default=0)
 
     return parser, argparse.Namespace()
 

@@ -32,16 +32,16 @@ from df_to_string_table import format_dataframe_for_slack
 def process_command_line(argv):
     if argv is None:
         argv = sys.argv[1:]
-    # initialize the parser object:
 
+    # initialize the parser object:
     parser = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("project_id", choices=["ppltx-m--tutorial-dev", "my-bi-project-ppltx","ppltx-m-tutorial-prod"],
-                        help="""Operation to perform. The arguments for each option are:Full_Load:   --date""",
+                        help="Operation to perform. The arguments for each option are:Full_Load:   --date",
                         default="ppltx-m--tutorial-dev")
-    parser.add_argument("--etl-action", choices=["init", "daily", "delete"], help="""The action the etl job""")
-    parser.add_argument("--etl-name", help="""The name of the etl job""")
-    parser.add_argument("--dry-run", help="""if True don't execute the queries""", action="store_true")
-    parser.add_argument("--days-back", help="""The number of days we want to go back""",default=0)
+    parser.add_argument("--etl-action", choices=["init", "daily", "delete"], help="The action the etl job")
+    parser.add_argument("--etl-name", help="The name of the etl job")
+    parser.add_argument("--dry-run", help="if True don't execute the queries", action="store_true")
+    parser.add_argument("--days-back", help="The number of days we want to go back",default=0)
 
     return parser, argparse.Namespace()
 
@@ -103,6 +103,9 @@ etl_configuration = readJsonFile(home / repo_name / repo_tail / f"config/{etl_na
 # dictionary for queries
 query_dict = {}
 alert_columns ='raise_flag'
+
+df_all = pd.DataFrame()   #  Initialize empty DataFrame
+
 # Iterate all the validation groups in the conf
 for alert_group_name, alerts in etl_configuration.items():
     header(alert_group_name)
@@ -111,10 +114,12 @@ for alert_group_name, alerts in etl_configuration.items():
     query_sql = readFile(home / repo_name / repo_tail / f"queries/{etl_name}_alert.sql")
     conf = alerts["alerts"]
 
-    query_params_base = {"date": y_m_d,
-                         "run_time": run_time,
-                         "project": project_id,
-                         "job_type": etl_action}
+    query_params_base = {
+        "date": y_m_d,
+         "run_time": run_time,
+         "project": project_id,
+         "job_type": etl_action
+    }
 
     for alert_name, alert_conf in conf.items():
         print(alert_name)
@@ -138,7 +143,7 @@ for alert_group_name, alerts in etl_configuration.items():
                 job = client.get_job(job_id)
 
                 # union the query results
-                if len(query_dict.keys()) == 1:
+                if df_all.empty:
                     df_all = query_df
                 else:
                     df_all = pd.concat([df_all, query_df], ignore_index=True)
@@ -147,18 +152,17 @@ for alert_group_name, alerts in etl_configuration.items():
                 header(f"Hi BI Developer we have a problem\nOpen file {str(logs_path)}/error.md")
                 print(msg_error)
                 writeFile(logs_path / "error.md", msg_error)
-                # To send alert in Slack
 
 
-# if the df has values, send a message
-if (df_all[alert_columns]).any():
-    # extract only the rows with raising_flag = True
+#  Final check – only if df_all has data
+if not df_all.empty and (df_all[alert_columns]).any():
+
     print(df_all[df_all[alert_columns]])
     error_msg = "[Logs Alert]"
     df_alert = df_all[df_all[alert_columns]]
     df_alert = df_alert.loc[:, df_alert.columns != 'message']
-    msg = (f"{error_msg}\n\n*These processes hadn't run in more than N hour*\n" + format_dataframe_for_slack(df_alert)) # query_df.to_string(index=1))
-    # slack_obj.update_with_slack_message(msg)
+    msg = f"{error_msg}\n\n*These processes hadn't run in more than N hour*\n"
+
     writeFile(logs_path / f"{etl_name}_monitoring_msg.md", msg)
     print(msg)
 
