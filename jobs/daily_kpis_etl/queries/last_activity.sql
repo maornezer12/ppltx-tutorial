@@ -3,6 +3,7 @@
  {run_time}
 */
 create or replace table `{project}.{dataset_dst}.{kpis_name}_inc`
+partition by last_activity
 options (description = "{description}")
 as
 SELECT

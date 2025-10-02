@@ -1,9 +1,9 @@
-
 /*
  run_time
  {run_time}
  */
 create or replace table `{project}.{dataset_dst}.{kpis_name}_inc`
+partition by date
 options (description = "{description}")
 as
 SELECT

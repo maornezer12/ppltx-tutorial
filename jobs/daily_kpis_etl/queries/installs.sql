@@ -6,6 +6,7 @@
 
  -- incremental data today and yesterday
 create or replace table `{project}.{dataset_dst}.{kpis_name}_inc`
+partition by install_date
 options (description = "{description}")
 as
 SELECT

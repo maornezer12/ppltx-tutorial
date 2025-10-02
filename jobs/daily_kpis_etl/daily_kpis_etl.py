@@ -5,7 +5,7 @@
 Run Commands
 python jobs/daily_kpis_etl/daily_kpis_etl.py ppltx-m--tutorial-dev --etl-name daily_kpis --etl-action daily --days-back 1
 python jobs/daily_kpis_etl/daily_kpis_etl.py ppltx-m--tutorial-dev --etl-name daily_kpis --etl-action daily --days-back 2
-python jobs/daily_kpis_etl/daily_kpis_etl.py ppltx-m--tutorial-dev --etl-name daily_kpis --etl-action daily --days-back 2 --dry-run
+python jobs/daily_kpis_etl/daily_kpis_etl.py ppltx-m--tutorial-dev --etl-name daily_kpis --etl-action daily --dry-run
 
 SELECT
     *

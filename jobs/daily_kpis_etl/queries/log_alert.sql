@@ -1,5 +1,5 @@
 /*
-exec time
+Run time
 {run_time}
 {description}
 {file_name}
