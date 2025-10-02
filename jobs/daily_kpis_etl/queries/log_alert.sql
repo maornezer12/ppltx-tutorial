@@ -20,3 +20,4 @@ WHERE
 ORDER BY
   ts desc
   Limit 1
+

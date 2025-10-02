@@ -128,7 +128,7 @@ for alert_group_name, alerts in etl_configuration.items():
         # write a query to log
         logs_path = home / "temp/logs/" / repo_name / repo_tail
         ensureDirectory(logs_path)
-        writeFile(logs_path/ f"{alert_name}.sql", query)
+        writeFile(logs_path/ f"log_{alert_name}.sql", query)
         if not flags.dry_run:
             try:
                 job_id = client.query(query)

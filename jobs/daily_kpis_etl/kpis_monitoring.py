@@ -134,7 +134,7 @@ for kpis_group_name, group_conf in kpis_configuration.items():
 
         # write a query to log
 
-        writeFile(logs_path/ f"{kpis_name}.sql", query)
+        writeFile(logs_path/ f"kpi_{kpis_name}.sql", query)
 
         if not flags.dry_run:
             try:
