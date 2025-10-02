@@ -1,0 +1,27 @@
+{
+  "ppltx_daily_kpis": {
+    "kpis": {
+      "installs": {
+        "dataset_dst": "fp_daily_kpis_etl",
+        "dataset_src": "gamepltx",
+        "table_src": "fact",
+        "description": "Panel which store all the users and their installation date",
+        "isEnable": true
+      },
+      "last_activity": {
+        "dataset_dst": "fp_daily_kpis_etl",
+        "dataset_src": "gamepltx",
+        "table_src": "fact",
+        "description": "Panel which store all the users and their last activity date",
+        "isEnable": true
+      },
+      "daily_user_panel": {
+        "dataset_dst": "fp_daily_kpis_etl",
+        "dataset_src": "gamepltx",
+        "table_src": "fact",
+        "description": "Daily user panel Panel contains the daily KPIs ",
+        "isEnable": true
+      }
+    }
+  }
+}

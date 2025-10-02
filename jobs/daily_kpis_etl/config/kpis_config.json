@@ -1,0 +1,31 @@
+{
+  "ppltx_daily_kpis": {
+    "kpis": {
+      "dau": {
+        "dataset": "fp_daily_kpis_etl",
+        "table_id": "daily_user_panel",
+        "thresh_in_percent": 0.1,
+        "d1": "previous_dau",
+        "description": "Check that the DAU hadn't change dramatically",
+        "isEnable": true
+      },
+      "installs": {
+        "dataset": "fp_daily_kpis_etl",
+        "table_id": "installs",
+        "thresh_in_percent": 0.1,
+        "d1": "previous_installs",
+        "description": "Check that the Daily installs hadn't change dramatically",
+        "isEnable": true
+      },
+      "last_activity": {
+        "dataset": "fp_daily_kpis_etl",
+        "table_id": "last_activity",
+        "thresh_in_percent": 0.1,
+        "d1": "balla",
+        "description": "Check that the Daily last_activity hadn't change dramatically",
+        "isEnable": true
+      }
+
+    }
+  }
+}

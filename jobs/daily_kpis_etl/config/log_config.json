@@ -1,0 +1,15 @@
+{
+  "daily_kpis_etl": {
+    "alerts": {
+      "daily_kpis_etl": {
+        "message": "",
+        "enable_message": "--",
+        "step_name": "end",
+        "file_name": "daily_kpis_etl.py",
+        "job_name": "daily_kpis",
+        "thresh_in_hours": 24,
+        "description": "Check that the job runs in the recent 24 hours"
+      }
+    }
+  }
+}
