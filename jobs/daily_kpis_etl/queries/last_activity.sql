@@ -1,34 +1,34 @@
 /*
- KPIs Name
- {kpis_name}
-
- Description
- {description}
+ run_time
+ {run_time}
 */
-
+create or replace table `{project}.{dataset_dst}.{kpis_name}_inc`
+options (description = "{description}")
+as
 SELECT
-  abs((t_installs - {d1})/ {d1}) > {thresh_in_percent} as raise_flag,
-  "{kpis_name}" as kpi,
-   install_date,
-   t_installs as metric,
-    {d1} as previous_metric,
-  "{project}.{dataset}.{table_id}" as table_name
+    user_id,
+    DATE(MAX(time)) AS last_activity
+FROM `{project}.{dataset_src}.{table_src}`
+WHERE DATE(time) >= DATE("{date}")
+GROUP BY user_id;
+
+delete from `{project}.{dataset_dst}.{kpis_name}`
+where last_activity >= date("{date}");
+
+insert into `{project}.{dataset_dst}.{kpis_name}`
+SELECT *
+FROM `{project}.{dataset_dst}.{kpis_name}_inc`;
+
+/*
+-- Validation - data distribution
+SELECT
+    last_activity,
+    COUNT(1) AS users
 FROM
-(
-  SELECT
-    install_date,
-    t_installs,
-    LAG(t_installs, 1) OVER (ORDER BY install_date) as {d1}
-  FROM
-  (
-    SELECT
-      last_activity,
-      COUNT(1) as t_installs
-    FROM `{project}.{dataset}.{table_id}`
-    GROUP BY install_date
-    ORDER BY install_date DESC
-    LIMIT 5
-  )
-)
-ORDER BY install_date DESC
-LIMIT 1;
+    `{project}.{dataset_dst}.{kpis_name}`
+GROUP BY
+    1
+ORDER BY
+    1 DESC
+LIMIT 10;
+*/

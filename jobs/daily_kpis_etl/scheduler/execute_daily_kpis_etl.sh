@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #  ╔═══════════════════════════════════════════╗
-#  ║    final project - Run daily logs monitor ║
+#  ║    final project - Run daily KPIs ETL     ║
 #  ╚═══════════════════════════════════════════╝
 
 # Run the python script according to our configuration

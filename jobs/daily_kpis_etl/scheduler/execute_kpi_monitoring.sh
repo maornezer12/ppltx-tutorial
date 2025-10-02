@@ -8,7 +8,6 @@
 
 cd ~/workspace/ppltx-tutorial/
 
-# bash ~/workspace/bi/jobs/my_etl/scheduler/execute_log_monitoring.sh
-
+# bash ~/workspace/ppltx-tutorial/jobs/daily_kpis_etl/scheduler/execute_kpi_monitoring.sh
 
 python jobs/daily_kpis_etl/kpis_monitoring.py ppltx-m--tutorial-dev --etl-name kpis --etl-action daily
