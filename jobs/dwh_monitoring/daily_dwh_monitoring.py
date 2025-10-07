@@ -33,7 +33,6 @@ import argparse
 import uuid
 import platform
 import pandas as pd
-from plotly.io import write_json
 
 # adapt the env to Mac or windows
 home = Path(os.path.expanduser("C:" if os.name == 'nt' else "~") + "/workspace")
