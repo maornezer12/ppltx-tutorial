@@ -1,0 +1,13 @@
+{
+  "table_properties_kpis": {
+    "kpis": {
+      "last_modified": {
+        "dataset": "fp_daily_dwh_monitor",
+        "table_id": "all_tables",
+        "days": 2,
+        "description": "Check that the table hadn't modified more then 24 h ",
+        "isEnable": true
+      }
+    }
+  }
+}

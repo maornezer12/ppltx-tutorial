@@ -1,0 +1,15 @@
+{
+  "dwh_monitoring": {
+    "alerts": {
+      "daily_dwh_monitor": {
+        "message": "",
+        "enable_message": "--",
+        "step_name": "end",
+        "file_name": "daily_dwh_monitoring.py",
+        "job_name": "dwh_monitoring",
+        "thresh_in_hours": 24,
+        "description": "Check that the job runs in the recent 24 hours"
+      }
+    }
+  }
+}
