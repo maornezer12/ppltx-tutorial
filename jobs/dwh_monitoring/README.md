@@ -62,7 +62,7 @@ create schema fp_daily_dwh_monitor options (description="contains tables of the 
 
 delete data from today
 ```dtd
-DELETE FROM `ppltx-m--tutorial-dev.fp_daily_dwh_monitor.all_tables` WHERE date = CURRENT_DATE();
+DELETE `ppltx-m--tutorial-dev`.fp_daily_dwh_monitor.all_tables WHERE date = FORMAT_DATE('%Y-%m-%d', `CURRENT_DATE`());
 ```
 
 ## Schedule on VM - Production
