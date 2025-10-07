@@ -86,7 +86,7 @@ bash ~/workspace/ppltx-tutorial/jobs/dwh_monitoring/scheduler/execute_log_monito
 
 Monitor changes in daily KPIs ETL by configuration file
 ```bash
-bash ~/workspace/ppltx-tutorial/jobs/dwh_monitoring/scheduler/execute_daily_dwh_monitoring.sh
+bash ~/workspace/ppltx-tutorial/jobs/dwh_monitoring/scheduler/execute_kpi_monitoring.sh
 ```
 
 ## Logs
