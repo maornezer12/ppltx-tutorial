@@ -9,23 +9,24 @@
  {description}
 */
 
-
 SELECT
   TRUE AS raise_flag,
-  dt,
+  DATE(CURRENT_DATETIME()) AS check_date,
   CASE
     WHEN DATE_DIFF(CURRENT_DATE(), DATE(modified), DAY) > {days} THEN "Not updated for more than {days} day(s)"
     WHEN DATE(modified) = CURRENT_DATE() THEN "Single-day table"
   END AS alert_reason,
   name,
+  project,
+  dataset_id,
+  table_id,
   modified,
   num_rows
 FROM `{project}.{dataset}.{table_id}`
-WHERE date = '{date}'
-  AND
+WHERE
   (
-  FALSE
-  OR DATE_DIFF(CURRENT_DATE(), DATE(modified), DAY) > {days}
-  OR DATE(modified) = CURRENT_DATE()
-      )
-;
+    DATE_DIFF(CURRENT_DATE(), DATE(modified), DAY) > {days}
+    OR DATE(modified) = CURRENT_DATE()
+  )
+ORDER BY modified DESC
+LIMIT 50;
